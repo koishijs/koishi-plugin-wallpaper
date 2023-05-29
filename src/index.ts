@@ -1,7 +1,8 @@
-import { Context, z } from 'koishi'
+import { Context, Logger, z } from 'koishi'
 import { DataService } from '@koishijs/plugin-console'
 import { resolve } from 'path'
 import { mkdir, readdir, readFile } from 'fs/promises'
+import { FSWatcher, watch } from 'chokidar'
 
 declare module '@koishijs/plugin-console' {
   namespace Console {
@@ -11,8 +12,11 @@ declare module '@koishijs/plugin-console' {
   }
 }
 
+const logger = new Logger('wallpaper')
+
 class Wallpaper extends DataService<string[]> {
-  private _task: Promise<string[]>
+  private task: Promise<string[]>
+  private watcher: FSWatcher
 
   public root: string
 
@@ -20,6 +24,15 @@ class Wallpaper extends DataService<string[]> {
     super(ctx, 'wallpaper')
 
     this.root = resolve(this.ctx.baseDir, this.config.root)
+
+    this.watcher = watch('*', { cwd: this.root })
+    this.watcher.on('ready', () => {
+      this.watcher.on('all', (event, path) => {
+        logger.info('wallpaper updated')
+        delete this.task
+        this.refresh()
+      })
+    })
 
     ctx.console.addEntry({
       dev: resolve(__dirname, '../client/index.ts'),
@@ -34,13 +47,18 @@ class Wallpaper extends DataService<string[]> {
     })
   }
 
+  stop() {
+    this.watcher.close()
+  }
+
   async _get() {
     await mkdir(this.root, { recursive: true })
-    return readdir(this.root)
+    const dirents = await readdir(this.root, { withFileTypes: true })
+    return dirents.filter(dirent => dirent.isFile()).map(dirent => dirent.name)
   }
 
   async get() {
-    return this._task ||= this._get()
+    return this.task ||= this._get()
   }
 }
 
