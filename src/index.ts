@@ -3,6 +3,7 @@ import { DataService } from '@koishijs/plugin-console'
 import { resolve } from 'path'
 import { mkdir, readdir, readFile } from 'fs/promises'
 import { FSWatcher, watch } from 'chokidar'
+import { debounce } from 'throttle-debounce'
 
 declare module '@koishijs/plugin-console' {
   namespace Console {
@@ -25,13 +26,15 @@ class Wallpaper extends DataService<string[]> {
 
     this.root = resolve(this.ctx.baseDir, this.config.root)
 
+    const update = debounce(500, () => {
+      logger.info('wallpaper updated')
+      delete this.task
+      this.refresh()
+    })
+
     this.watcher = watch('*', { cwd: this.root })
     this.watcher.on('ready', () => {
-      this.watcher.on('all', (event, path) => {
-        logger.info('wallpaper updated')
-        delete this.task
-        this.refresh()
-      })
+      this.watcher.on('all', update)
     })
 
     ctx.console.addEntry({

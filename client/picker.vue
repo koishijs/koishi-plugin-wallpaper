@@ -49,8 +49,8 @@ defineEmits(['update:modelValue'])
 
 <style lang="scss">
 
-$width: 300px;
-$height: 200px;
+$width: 240px;
+$height: 180px;
 
 .el-dialog.wallpaper-picker {
   width: 66%;
