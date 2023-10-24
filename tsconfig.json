@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "target": "es2019",
+    "target": "es2022",
     "module": "commonjs",
     "declaration": true,
     "emitDeclarationOnly": true,
