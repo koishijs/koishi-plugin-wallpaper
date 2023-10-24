@@ -16,6 +16,8 @@ declare module '@koishijs/plugin-console' {
 const logger = new Logger('wallpaper')
 
 class Wallpaper extends DataService<string[]> {
+  static inject = ['console', 'router']
+
   private task: Promise<string[]>
   private watcher: FSWatcher
 
