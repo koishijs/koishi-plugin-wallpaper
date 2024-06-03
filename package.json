@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-wallpaper",
   "description": "Add background images for Koishi console",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -46,21 +46,22 @@
     }
   },
   "peerDependencies": {
-    "@koishijs/plugin-console": "^5.17.0",
-    "koishi": "^4.15.2"
+    "@koishijs/plugin-console": "^5.29.1",
+    "koishi": "^4.17.8"
   },
   "devDependencies": {
-    "@koishijs/client": "^5.17.0",
-    "@koishijs/plugin-console": "^5.17.0",
-    "@types/node": "^20.4.2",
+    "@koishijs/client": "^5.29.1",
+    "@koishijs/plugin-console": "^5.29.1",
+    "@koishijs/plugin-server": "^3.2.3",
+    "@types/node": "^20.11.30",
     "@types/throttle-debounce": "^2.1.0",
-    "esbuild": "^0.18.14",
-    "esbuild-register": "^3.4.2",
-    "koishi": "^4.15.2",
-    "typescript": "^5.1.6"
+    "esbuild": "^0.18.20",
+    "esbuild-register": "^3.5.0",
+    "koishi": "^4.17.8",
+    "typescript": "^5.4.3"
   },
   "dependencies": {
-    "chokidar": "^3.5.3",
+    "chokidar": "^3.6.0",
     "throttle-debounce": "^3.0.1"
   }
 }
