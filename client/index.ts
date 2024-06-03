@@ -31,7 +31,7 @@ export default function (ctx: Context) {
     })
   })
 
-  ctx.schema({
+  ctx.schema.component({
     type: 'string',
     role: 'wallpaper',
     component: Picker,
@@ -43,7 +43,7 @@ export default function (ctx: Context) {
     schema: Schema.object({
       wallpaper: Schema.object({
         image: Schema.string().role('wallpaper').description('要使用的背景图片。'),
-        opacity: Schema.percent().min(0.5).default(0.9).description('前景的透明度。'),
+        opacity: Schema.percent().min(0.5).default(0.9).description('前景的不透明度。'),
       }).description('壁纸设置'),
     }),
   })

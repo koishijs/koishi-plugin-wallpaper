@@ -1,11 +1,11 @@
-import { Context, Logger, z } from 'koishi'
+import { Context, z } from 'koishi'
+import {} from '@koishijs/plugin-server'
 import { DataService } from '@koishijs/plugin-console'
 import { resolve } from 'path'
 import { mkdir, readdir, readFile } from 'fs/promises'
 import { FSWatcher, watch } from 'chokidar'
-import { debounce } from 'throttle-debounce'
 
-declare module '@koishijs/plugin-console' {
+declare module '@koishijs/console' {
   namespace Console {
     interface Services {
       wallpaper: Wallpaper
@@ -13,26 +13,24 @@ declare module '@koishijs/plugin-console' {
   }
 }
 
-const logger = new Logger('wallpaper')
-
 class Wallpaper extends DataService<string[]> {
-  static inject = ['console', 'router']
+  static inject = ['console', 'server']
 
   private task: Promise<string[]>
   private watcher: FSWatcher
 
   public root: string
 
-  constructor(ctx: Context, private config: Wallpaper.Config) {
+  constructor(ctx: Context, public config: Wallpaper.Config) {
     super(ctx, 'wallpaper')
 
     this.root = resolve(this.ctx.baseDir, this.config.root)
 
-    const update = debounce(500, () => {
-      logger.info('wallpaper updated')
+    const update = ctx.debounce(() => {
+      this.ctx.logger.info('wallpaper updated')
       delete this.task
       this.refresh()
-    })
+    }, 500)
 
     this.watcher = watch('*', { cwd: this.root })
     this.watcher.on('ready', () => {
@@ -44,7 +42,7 @@ class Wallpaper extends DataService<string[]> {
       prod: resolve(__dirname, '../dist'),
     })
 
-    ctx.router.get('/wallpaper/:name', async (ctx) => {
+    ctx.server.get('/wallpaper/:name', async (ctx) => {
       const { name } = ctx.params
       const filename = resolve(this.root, name)
       if (!filename.startsWith(this.root)) return ctx.status = 403

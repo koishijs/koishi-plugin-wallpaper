@@ -30,6 +30,7 @@
 import { PropType, ref } from 'vue'
 import { Schema, SchemaBase, store } from '@koishijs/client'
 import {} from 'koishi'
+import {} from 'koishi-plugin-wallpaper'
 
 defineProps({
   schema: {} as PropType<Schema>,
